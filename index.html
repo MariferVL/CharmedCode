@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Charmed Code - Tarot Reading</title>
+    <style>
+        body {
+            font-family: "Courier New", Courier, monospace;
+            background-color: black;
+            color: #00FF00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #000;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .output {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="cli-output" class="output"></div>
+    <div id="cli-input" class="output"></div>
+</div>
+
+<script>
+    const outputDiv = document.getElementById('cli-output');
+    const inputDiv = document.getElementById('cli-input');
+
+    const cards = {
+        "The Fool": "A new beginning, a leap of faith, innocence. ✨ A reminder that sometimes taking a risk can lead to great rewards. Trust the journey.",
+        "The Magician": "Manifestation, resourcefulness, power. 💪 You have the tools to succeed. Harness your inner power and make things happen.",
+        "The High Priestess": "Intuition, unconscious knowledge, mystery. 🌙 Listen to your inner voice; the answers you seek are already within you.",
+        "The Empress": "Abundance, nurturing, fertility, creativity. 🌸 Nurture your ideas, and they will grow into something beautiful and fulfilling.",
+        "The Emperor": "Authority, structure, stability, leadership. 🏛️ Take charge of your situation; your leadership will bring order and stability.",
+        "The Hierophant": "Tradition, spiritual guidance, conformity. 📜 Seek wisdom from trusted sources, but remember that growth often requires breaking away from tradition.",
+        "The Lovers": "Love, union, choices, harmony. 💖 This is a time to connect deeply with others or make choices that align with your true desires.",
+        "The Chariot": "Victory, control, determination, willpower. 🏆 Keep your focus and determination, success is within your reach.",
+        "Strength": "Courage, strength, patience, inner power. 💪 Embrace challenges with patience; your inner strength will guide you through.",
+        "The Hermit": "Solitude, reflection, guidance from within. 🌿 Take time for introspection; clarity will come from within when you step away from the noise.",
+        "Wheel of Fortune": "Change, cycles, destiny, luck. 🔄 Embrace the natural flow of life—what goes down will come back up. Stay adaptable.",
+        "Justice": "Fairness, balance, truth, cause and effect. ⚖️ Trust that justice will prevail, and your actions will have the consequences they deserve.",
+        "The Hanged Man": "Suspension, letting go, new perspectives. 🌀 Sometimes, the best way forward is to let go and see things from a new angle.",
+        "Death": "Endings, transformation, rebirth. 💀 Every ending brings a new beginning. Embrace transformation and the opportunity for renewal.",
+        "Temperance": "Balance, moderation, purpose, healing. ⚖️ Seek balance in your life; moderation will lead to peace and progress.",
+        "The Devil": "Temptation, addiction, materialism, bondage. ⛓️ Be mindful of unhealthy attachments. Freedom comes from letting go of what binds you.",
+        "The Tower": "Sudden change, chaos, awakening. 🌪️ Expect the unexpected; sometimes chaos is necessary to clear the path for new opportunities.",
+        "The Star": "Hope, inspiration, faith, renewal. 🌟 Stay hopeful, even in dark times. Your dreams and aspirations are within reach.",
+        "The Moon": "Illusion, intuition, dreams, the subconscious. 🌙 Trust your instincts, but be cautious—things may not be what they seem.",
+        "The Sun": "Success, vitality, joy, enlightenment. 🌞 A time of joy and success is ahead. Let your positivity and energy shine.",
+        "Judgment": "Rebirth, inner calling, reflection, absolution. 🔔 Reflect on your past actions and embrace a new chapter of growth and understanding.",
+        "The World": "Completion, achievement, fulfillment, wholeness. 🌍 The cycle is complete. You've come full circle and are ready for the next adventure."
+    };
+
+    function slowPrint(message, delay = 50) {
+    return new Promise(resolve => {
+        let formattedMessage = message.replace(/\n/g, "<br>");
+        let index = 0;
+        const interval = setInterval(() => {
+            if (index < formattedMessage.length) {
+                if (formattedMessage.substr(index, 4) === "<br>") {
+                    outputDiv.innerHTML += "<br>";
+                    index += 4;
+                } else {
+                    outputDiv.innerHTML += formattedMessage[index];
+                    index++;
+                }
+            } else {
+                clearInterval(interval);
+                outputDiv.innerHTML += "<br>";
+                resolve();
+            }
+        }, delay);
+    });
+}
+
+
+
+    function getUserInput(promptText) {
+        return new Promise(resolve => {
+            slowPrint(promptText).then(() => {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.style.backgroundColor = 'black';
+                input.style.color = '#00FF00';
+                input.style.border = 'none';
+                input.style.borderBottom = '1px solid #00FF00';
+                input.style.width = '100%';
+                input.style.fontFamily = 'Courier New, Courier, monospace';
+                inputDiv.appendChild(input);
+                input.focus();
+                input.onkeydown = function (e) {
+                    if (e.key === 'Enter') {
+                        const inputValue = input.value.trim();
+                        inputDiv.removeChild(input);
+                        outputDiv.innerHTML += `<br><strong>${inputValue}</strong><br>`;
+                        resolve(inputValue);
+                    }
+                };
+            });
+        });
+    }
+
+    async function delayBetweenMessages(delay) {
+    return new Promise(resolve => setTimeout(resolve, delay));
+}
+
+async function startTarotReading() {
+    await slowPrint("🌟 Welcome to Charmed Code, your Tarot Reading! 🌟\n");
+    await delayBetweenMessages(1500);
+    await slowPrint("Before we begin, take a moment to clear your mind. 🧘‍♀️");
+    await delayBetweenMessages(1500);
+    await slowPrint("Focus on a question you'd like to ask the universe. 💭");
+    await delayBetweenMessages(1500);
+    await slowPrint("When you're ready, we'll shuffle the deck. 🌿\n");
+    await delayBetweenMessages(1500);
+
+    let numCards = await getUserInput("How many cards would you like to draw? (1-5): ");
+    numCards = parseInt(numCards);
+
+    if (numCards < 1 || numCards > 5 || isNaN(numCards)) {
+        await slowPrint("Please choose a number between 1 and 5.");
+        await delayBetweenMessages(1500);
+        return startTarotReading();
+    }
+
+    await slowPrint("\nShuffling the cards... 🔮");
+    await delayBetweenMessages(1500);
+    await slowPrint("\nYour tarot reading is: ✨");
+    await delayBetweenMessages(1500);
+
+    const drawnCards = [];
+    const allCards = Object.keys(cards);
+    const shuffledCards = [...allCards];
+    for (let i = 0; i < numCards; i++) {
+        const randomIndex = Math.floor(Math.random() * shuffledCards.length);
+        drawnCards.push(shuffledCards.splice(randomIndex, 1)[0]);
+    }
+
+    for (let i = 0; i < drawnCards.length; i++) {
+        const card = drawnCards[i];
+        await slowPrint(`Card ${i + 1}: ${card} 🌟`);
+        await delayBetweenMessages(1000);
+        await slowPrint(`${cards[card]}`);
+        await delayBetweenMessages(1500);
+    }
+
+    await slowPrint("\nRemember, the cards offer guidance, but your destiny is shaped by your choices. 🌌");
+    await delayBetweenMessages(1500);
+    await slowPrint("\nThe universe is listening to you. 💫");
+}
+
+    window.onload = startTarotReading;
+</script>
+</body>
+</html>
